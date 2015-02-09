@@ -1,0 +1,16 @@
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/player/Player.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/model/Album.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/model/Song.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/rest/Interprets.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/rest/Songs.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/player/Playlist.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/rest/Albums.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/model/Settings.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/service/SettingsService.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/settings/SettingsConstants.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/service/DBSource.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/App.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/view/MainView.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/enums/ServerStatus.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/rest/RestBase.java
+/Users/fbentele/Documents/mgb-pim/ide/workspace_mac/suby/src/main/java/ch/flokus/suby/rest/Status.java
