@@ -3,7 +3,9 @@ package ch.flokus.suby.view;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.KeyEvent;
@@ -28,7 +30,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import ch.flokus.suby.App;
 import ch.flokus.suby.model.Album;
 import ch.flokus.suby.model.Song;
 import ch.flokus.suby.player.Player;
@@ -49,6 +50,7 @@ public class MainView implements PropertyChangeListener {
     private Status status = null;
     private Playlist playList = null;
     private Player player = null;
+    private File versionFile = null;
 
     private Display display = null;
     private Shell shell = null;
@@ -69,6 +71,7 @@ public class MainView implements PropertyChangeListener {
         playList.addChangeListener(this);
         player = new Player(playList);
         player.addChangeListener(this);
+        versionFile = new File(System.getProperty("user.home") + "/.suby/autoupdate.ini");
     }
 
     public void getMainView() {
@@ -108,7 +111,7 @@ public class MainView implements PropertyChangeListener {
         lUsername.setText("Username:");
         lUsername.setBounds(10, 40, 75, 20);
         Label lPassword = new Label(shell, SWT.BORDER);
-        lPassword.setText("Passwordd:");
+        lPassword.setText("Password:");
         lPassword.setBounds(10, 70, 75, 20);
         Label lAppname = new Label(shell, SWT.BORDER);
         lAppname.setText("Appname:");
@@ -126,6 +129,27 @@ public class MainView implements PropertyChangeListener {
         final Text appname = new Text(shell, SWT.NONE);
         appname.setText(setService.getSetting(SettingsConstants.APPNAME));
         appname.setBounds(100, 100, 140, 20);
+        final Button autoUpdate = new Button(shell, SWT.CHECK);
+        autoUpdate.setBounds(100, 130, 140, 20);
+        autoUpdate.setText("Auto Update");
+        if (versionFile.exists()) {
+            autoUpdate.setSelection(true);
+        }
+
+        autoUpdate.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (autoUpdate.getSelection()) {
+                    try {
+                        FileUtils.writeStringToFile(versionFile, AppConstants.VERSION, "UTF-8", false);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    FileUtils.deleteQuietly(versionFile);
+                }
+            }
+        });
 
         playListTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         playListTable.setBounds(540, 10, 450, 150);
@@ -138,7 +162,7 @@ public class MainView implements PropertyChangeListener {
 
         // middle section
         albumTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        albumTable.setBounds(330, 170, 350, 300);
+        albumTable.setBounds(330, 180, 350, 300);
         albumTable.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
         TableColumn albumCol1 = new TableColumn(albumTable, SWT.NONE);
         TableColumn albumCol2 = new TableColumn(albumTable, SWT.NONE);
@@ -150,7 +174,7 @@ public class MainView implements PropertyChangeListener {
         albumCol3.setWidth(40);
 
         final Table songTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        songTable.setBounds(690, 170, 300, 300);
+        songTable.setBounds(690, 180, 300, 300);
         TableColumn col1 = new TableColumn(songTable, SWT.NONE);
         TableColumn col2 = new TableColumn(songTable, SWT.NONE);
         TableColumn col3 = new TableColumn(songTable, SWT.NONE);
@@ -162,7 +186,7 @@ public class MainView implements PropertyChangeListener {
         col3.setWidth(40);
 
         final List interpretList = new List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-        interpretList.setBounds(10, 170, 300, 300);
+        interpretList.setBounds(10, 180, 300, 300);
         for (String i : interp.getAll()) {
             interpretList.add(i);
         }
@@ -272,7 +296,7 @@ public class MainView implements PropertyChangeListener {
 
         Button save = new Button(shell, SWT.PUSH);
         save.setText("Save Settings");
-        save.setBounds(5, 130, 120, 30);
+        save.setBounds(5, 150, 120, 30);
         save.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -285,7 +309,7 @@ public class MainView implements PropertyChangeListener {
 
         Button connect = new Button(shell, SWT.PUSH);
         connect.setText("Test Connection");
-        connect.setBounds(125, 130, 130, 30);
+        connect.setBounds(125, 150, 130, 30);
         connect.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -311,7 +335,7 @@ public class MainView implements PropertyChangeListener {
         currentSong.setBounds(390, 50, 130, 20);
         currentSong.setText("");
         currentAlbumArtContainer = new Label(shell, SWT.BORDER);
-        currentAlbumArtContainer.setBounds(390, 70, 90, 90);
+        currentAlbumArtContainer.setBounds(390, 70, 100, 100);
 
         shell.open();
         while (!shell.isDisposed()) {

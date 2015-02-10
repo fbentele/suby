@@ -62,7 +62,7 @@ public class RestBase {
 		try {
 			URL server = new URL(restbase);
 			String absolute = System.getProperty("user.home") + "/Music/Suby/" + s.getPath();
-			absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9.-/\\ ]", "_");
+			absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().-/\\ ]", "_");
 			File mp = new File(absolute);
 			if (mp.exists()) {
 				System.out.println("already downloaded");

@@ -3,7 +3,7 @@
 
 	<groupId>ch.flokus</groupId>
 	<artifactId>suby</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>v0.2.1</version>
 	<packaging>jar</packaging>
 	<organization>
 		<name>Flokus</name>
