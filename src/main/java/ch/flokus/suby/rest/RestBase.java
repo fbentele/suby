@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ch.flokus.suby.model.Song;
+import ch.flokus.suby.service.AppUtils;
 import ch.flokus.suby.service.SettingsService;
 import ch.flokus.suby.settings.SettingsConstants;
 
@@ -120,15 +121,7 @@ public class RestBase {
 			while ((inputLine = in.readLine()) != null)
 				json += inputLine;
 			in.close();
-			json = json.replaceAll("&#244;", "ô");
-			json = json.replaceAll("&#242;", "ó");
-			json = json.replaceAll("&#246;", "ö");
-			json = json.replaceAll("&#776;", "ö");
-			json = json.replaceAll("&#252;", "ü");
-			json = json.replaceAll("&#228;", "ä");
-			json = json.replaceAll("&#196;", "Ä");
-			json = json.replaceAll("&#233;", "é");
-			json = json.replaceAll("&#229;", "å");
+			json = AppUtils.replaceAsciiChars(json);
 			JSONObject obj = new JSONObject(json);
 			return obj;
 		} catch (MalformedURLException e1) {

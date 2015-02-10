@@ -10,9 +10,14 @@ public class DBSource {
 	static ConnectionSource c = null;
 
 	private DBSource() {
+
 	}
 
-	private static void connect() {
+	private static void connect() throws ClassNotFoundException {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+		}
 		String home = System.getProperty("user.home");
 		home += "/.suby/";
 		File subyhome = new File(home);
@@ -32,7 +37,6 @@ public class DBSource {
 		String databaseUrl = "jdbc:sqlite:" + home + "suby.db";
 		try {
 			c = new JdbcConnectionSource(databaseUrl);
-
 		} catch (SQLException e) {
 
 		}
@@ -40,7 +44,10 @@ public class DBSource {
 
 	public static ConnectionSource getConnection() {
 		if (c == null) {
-			connect();
+			try {
+				connect();
+			} catch (ClassNotFoundException e) {
+			}
 		}
 		return c;
 	}
