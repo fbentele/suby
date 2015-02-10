@@ -5,6 +5,7 @@ ch/flokus/suby/view/MainView$9.class
 ch/flokus/suby/view/MainView$5.class
 ch/flokus/suby/model/Song.class
 ch/flokus/suby/rest/Interprets.class
+ch/flokus/suby/player/Player$2.class
 ch/flokus/suby/rest/RestBase.class
 ch/flokus/suby/settings/SettingsConstants.class
 ch/flokus/suby/player/Playlist.class
@@ -22,7 +23,9 @@ ch/flokus/suby/player/Player$1.class
 ch/flokus/suby/enums/ServerStatus.class
 ch/flokus/suby/view/MainView$11.class
 ch/flokus/suby/rest/Albums.class
+ch/flokus/suby/view/MainView$12.class
 ch/flokus/suby/rest/Songs.class
 ch/flokus/suby/view/MainView$10.class
+ch/flokus/suby/settings/AppConstants.class
 ch/flokus/suby/view/MainView$2.class
 ch/flokus/suby/view/MainView$7.class

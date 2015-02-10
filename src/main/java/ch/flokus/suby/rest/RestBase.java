@@ -52,7 +52,6 @@ public class RestBase {
 
 	public Song download(String songId) {
 		// get song meta information
-
 		JSONObject songmeta = getJson("getSong.view", "id", songId);
 		songmeta = songmeta.getJSONObject("subsonic-response").getJSONObject("song");
 		Song s = new Song(songmeta);
@@ -63,7 +62,7 @@ public class RestBase {
 		try {
 			URL server = new URL(restbase);
 			String absolute = System.getProperty("user.home") + "/Music/Suby/" + s.getPath();
-			absolute = absolute.replaceAll("[^a-zA-Zäöüéèà0-9.-/\\ ]", "_");
+			absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9.-/\\ ]", "_");
 			File mp = new File(absolute);
 			if (mp.exists()) {
 				System.out.println("already downloaded");
@@ -72,7 +71,6 @@ public class RestBase {
 				FileUtils.copyURLToFile(server, mp);
 				System.out.println("done!");
 			}
-
 			absolute = "file://" + absolute.replaceAll(" ", "%20");
 			s.setPath(absolute);
 			return s;
@@ -91,7 +89,6 @@ public class RestBase {
 			JSONObject o = request(restbase);
 			if (o.getJSONObject("subsonic-response").get("status").equals("failed"))
 				return;
-
 		} catch (JSONException e) {
 			URL server;
 			try {
