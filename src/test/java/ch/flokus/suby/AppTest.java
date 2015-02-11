@@ -41,14 +41,12 @@ public class AppTest extends TestCase {
             e = new String(s.getBytes("UTF-8"), "UTF-8");
             System.out.println(e);
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         try {
             System.out.println(URLEncoder.encode(s, "UTF-8"));
             
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
     }
