@@ -62,55 +62,28 @@ public class RestBase {
         // get song meta information
         JSONObject songmeta = getJson("getSong.view", "id", songId);
         songmeta = songmeta.getJSONObject("subsonic-response").getJSONObject("song");
-        Song s = new Song(songmeta);
-        getAlbumCover(s);
+        Song song = new Song(songmeta);
         // url for song download
         String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;
         try {
             URL server = new URL(restbase);
-            String absolute = System.getProperty("user.home") + "/Music/Suby/" + s.getPath();
+            String absolute = System.getProperty("user.home") + "/Music/Suby/" + song.getPath();
             absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().-/\\ ]", "_");
             File mp = new File(absolute);
             if (mp.exists()) {
                 System.out.println("already downloaded");
             } else {
                 System.out.println("downloading...");
-                FileUtils.copyURLToFile(server, mp);
+                new AsyncDownloader(server, mp);
                 System.out.println("done!");
             }
             absolute = "file://" + absolute.replaceAll(" ", "%20");
-            s.setPath(absolute);
-            return s;
+            song.setPath(absolute);
+            return song;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void getAlbumCover(Song s) {
-        String restbase = server + "/rest/getCoverArt.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + s.getCoverArt()
-                + "&size=100";
-        try {
-            JSONObject o = request(restbase);
-            if (o.getJSONObject("subsonic-response").get("status").equals("failed"))
-                return;
-        } catch (JSONException e) {
-            URL server;
-            try {
-                server = new URL(restbase);
-                String coverPath = System.getProperty("user.home") + "/Music/Suby/" + s.getArtist().replace("/", "_") + "/" + s.getAlbum() + "/al-"
-                        + s.getAlbumId() + ".jpg";
-                File cover = new File(coverPath);
-                if (!cover.exists())
-                    FileUtils.copyURLToFile(server, cover);
-            } catch (MalformedURLException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
     }
 
     public void getAlbumCover(Album a) {
@@ -127,11 +100,11 @@ public class RestBase {
                 String coverPath = System.getProperty("user.home") + "/Music/Suby/" + a.getArtist().replace("/", "_") + "/" + a.getName() + "/al-" + a.getId()
                         + ".jpg";
                 File cover = new File(coverPath);
-                if (!cover.exists())
-                    FileUtils.copyURLToFile(server, cover);
+                if (!cover.exists()) {
+                    new AsyncDownloader(server, cover);
+                    // FileUtils.copyURLToFile(server, cover);
+                }
             } catch (MalformedURLException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }
