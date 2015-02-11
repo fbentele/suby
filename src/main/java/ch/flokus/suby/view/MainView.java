@@ -8,11 +8,8 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
@@ -60,11 +57,14 @@ public class MainView implements PropertyChangeListener {
     private Label currentAlbum = null;
     private Label currentSong = null;
     private Label currentAlbumArtContainer = null;
+    private List artistList = null;
+    private Canvas canvas = null;
 
     public MainView() {
         so = new Songs();
         alb = new Albums();
-        status = new Status();
+        status = Status.getInstance();
+        status.addChangeListener(this);
         setService = new SettingsService();
         interp = new Interprets();
         playList = new Playlist();
@@ -82,17 +82,6 @@ public class MainView implements PropertyChangeListener {
         shell = new Shell(display);
         shell.setText("Suby - " + AppConstants.VERSION);
         shell.setBounds(100, 100, 1000, 520);
-        shell.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                System.out.println(e.keyCode);
-            }
-        });
 
         Menu bar = new Menu(shell, SWT.BAR);
         shell.setMenuBar(bar);
@@ -185,17 +174,17 @@ public class MainView implements PropertyChangeListener {
         col2.setWidth(240);
         col3.setWidth(40);
 
-        final List interpretList = new List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-        interpretList.setBounds(10, 180, 300, 300);
-        for (String i : interp.getAll()) {
-            interpretList.add(i);
-        }
+        artistList = new List(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+        artistList.setBounds(10, 180, 300, 300);
 
-        interpretList.addListener(SWT.Selection, new Listener() {
+        refreshArtistList();
+        updateConnectionState();
+
+        artistList.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {
-                int[] selection = interpretList.getSelectionIndices();
+                int[] selection = artistList.getSelectionIndices();
                 if (selection.length == 1) {
-                    String interpret = interpretList.getItem(selection[0]);
+                    String interpret = artistList.getItem(selection[0]);
                     Integer id = Integer.parseInt(interpret.subSequence(interpret.indexOf("(") + 1, interpret.indexOf(")")).toString());
                     albumTable.removeAll();
                     songTable.removeAll();
@@ -242,15 +231,6 @@ public class MainView implements PropertyChangeListener {
                 String id = songTable.getSelection()[0].getText(0);
                 player.resetPlaylist();
                 player.play(id);
-            }
-        });
-
-        final Canvas canvas = new Canvas(shell, SWT.NONE);
-        canvas.setBounds(250, 10, 15, 15);
-        canvas.addListener(SWT.Paint, new Listener() {
-            public void handleEvent(Event event) {
-                event.gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
-                event.gc.fillOval(0, 0, 12, 12);
             }
         });
 
@@ -308,20 +288,12 @@ public class MainView implements PropertyChangeListener {
         });
 
         Button connect = new Button(shell, SWT.PUSH);
-        connect.setText("Test Connection");
-        connect.setBounds(125, 150, 130, 30);
+        connect.setText("Connect");
+        connect.setBounds(125, 150, 110, 30);
         connect.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (status.testConnection().equals("ok")) {
-                    GC tempgc = new GC(canvas);
-                    tempgc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
-                    tempgc.fillOval(0, 0, 12, 12);
-                } else {
-                    GC tempgc = new GC(canvas);
-                    tempgc.setBackground(display.getSystemColor(SWT.COLOR_RED));
-                    tempgc.fillOval(0, 0, 12, 12);
-                }
+                updateConnectionState();
             }
         });
 
@@ -363,6 +335,15 @@ public class MainView implements PropertyChangeListener {
             updateAlbumTable();
             updateCurrentlyPlaying();
         }
+        if (evt.getPropertyName().equals("serverState")) {
+            updateConnectionState();
+        }
+    }
+
+    private void refreshArtistList() {
+        for (String i : interp.getAll()) {
+            artistList.add(i);
+        }
     }
 
     private void updateAlbumTable() {
@@ -392,5 +373,30 @@ public class MainView implements PropertyChangeListener {
                 currentAlbumArtContainer.setImage(currentAlbumArt);
             }
         }
+    }
+
+    private void updateConnectionState() {
+        canvas = new Canvas(shell, SWT.NONE);
+        canvas.setBounds(250, 10, 15, 15);
+        System.out.println("w$$$" + status.getState());
+        canvas.addListener(SWT.Paint, new Listener() {
+            public void handleEvent(Event event) {
+                switch (status.getState()) {
+                case ERROR:
+                    event.gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
+                    break;
+                case UNKNOWN:
+                    event.gc.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
+                    break;
+                case OK:
+                    event.gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
+                    break;
+                default:
+                    event.gc.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
+                    break;
+                }
+                event.gc.fillOval(0, 0, 12, 12);
+            }
+        });
     }
 }
