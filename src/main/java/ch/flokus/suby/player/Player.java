@@ -28,7 +28,7 @@ public class Player {
 		JFXPanel fxPanel = new JFXPanel();
 		fxPanel.isEnabled();
 		this.playList = playList;
-		rest = new RestBase();
+		rest = RestBase.getInstance();
 	}
 
 	public void play(String id) {

@@ -14,7 +14,7 @@ public class Albums {
 	private RestBase rest = null;
 
 	public Albums() {
-		rest = new RestBase();
+		rest = RestBase.getInstance();
 	}
 
 	public List<Album> getAllForArtist(Integer id) {

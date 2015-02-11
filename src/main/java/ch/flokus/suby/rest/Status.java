@@ -17,7 +17,7 @@ public class Status {
     private static Status instance = null;
     
     private Status() {
-        rest = new RestBase();
+        rest = RestBase.getInstance();
         state = ServerStatus.UNKNOWN;
     }
     

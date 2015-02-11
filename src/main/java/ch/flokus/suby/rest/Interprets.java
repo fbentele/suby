@@ -11,7 +11,7 @@ public class Interprets {
     private RestBase rest = null;
 
     public Interprets() {
-        rest = new RestBase();
+        rest = RestBase.getInstance();
     }
 
     public List<String> getAll() {

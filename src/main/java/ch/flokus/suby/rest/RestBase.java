@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ch.flokus.suby.enums.ServerStatus;
+import ch.flokus.suby.model.Album;
 import ch.flokus.suby.model.Song;
 import ch.flokus.suby.service.AppUtils;
 import ch.flokus.suby.service.SettingsService;
@@ -26,9 +27,18 @@ public class RestBase {
     private String pass = "";
     private String server = "";
     private String appname = "";
+    private static RestBase instance = null;
 
-    public RestBase() {
+    public static RestBase getInstance() {
+        if (instance == null) {
+            instance = new RestBase();
+        }
+        return instance;
+    }
+
+    private RestBase() {
         setService = new SettingsService();
+        refresh();
     }
 
     public void refresh() {
@@ -39,13 +49,11 @@ public class RestBase {
     }
 
     public JSONObject getJson(String view) {
-        refresh();
         String restbase = server + "/rest/" + view + "?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json";
         return request(restbase);
     }
 
     public JSONObject getJson(String view, String key, String value) {
-        refresh();
         String restbase = server + "/rest/" + view + "?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&" + key + "=" + value;
         return request(restbase);
     }
@@ -55,7 +63,7 @@ public class RestBase {
         JSONObject songmeta = getJson("getSong.view", "id", songId);
         songmeta = songmeta.getJSONObject("subsonic-response").getJSONObject("song");
         Song s = new Song(songmeta);
-        checkSongCover(s);
+        getAlbumCover(s);
         // url for song download
         String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;
         try {
@@ -81,7 +89,7 @@ public class RestBase {
         return null;
     }
 
-    private void checkSongCover(Song s) {
+    private void getAlbumCover(Song s) {
         String restbase = server + "/rest/getCoverArt.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + s.getCoverArt()
                 + "&size=100";
         try {
@@ -94,6 +102,30 @@ public class RestBase {
                 server = new URL(restbase);
                 String coverPath = System.getProperty("user.home") + "/Music/Suby/" + s.getArtist().replace("/", "_") + "/" + s.getAlbum() + "/al-"
                         + s.getAlbumId() + ".jpg";
+                File cover = new File(coverPath);
+                if (!cover.exists())
+                    FileUtils.copyURLToFile(server, cover);
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public void getAlbumCover(Album a) {
+        String restbase = server + "/rest/getCoverArt.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + a.getCoverArt()
+                + "&size=100";
+        try {
+            JSONObject o = request(restbase);
+            if (o.getJSONObject("subsonic-response").get("status").equals("failed"))
+                return;
+        } catch (JSONException e) {
+            URL server;
+            try {
+                server = new URL(restbase);
+                String coverPath = System.getProperty("user.home") + "/Music/Suby/" + a.getArtist().replace("/", "_") + "/" + a.getName() + "/al-" + a.getId()
+                        + ".jpg";
                 File cover = new File(coverPath);
                 if (!cover.exists())
                     FileUtils.copyURLToFile(server, cover);

@@ -33,6 +33,7 @@ import ch.flokus.suby.player.Player;
 import ch.flokus.suby.player.Playlist;
 import ch.flokus.suby.rest.Albums;
 import ch.flokus.suby.rest.Interprets;
+import ch.flokus.suby.rest.RestBase;
 import ch.flokus.suby.rest.Songs;
 import ch.flokus.suby.rest.Status;
 import ch.flokus.suby.service.SettingsService;
@@ -41,6 +42,7 @@ import ch.flokus.suby.settings.SettingsConstants;
 
 public class MainView implements PropertyChangeListener {
     private SettingsService setService = null;
+    private RestBase rest = null;
     private Interprets interp = null;
     private Albums alb = null;
     private Songs so = null;
@@ -61,6 +63,7 @@ public class MainView implements PropertyChangeListener {
     private Canvas canvas = null;
 
     public MainView() {
+        rest = RestBase.getInstance();
         so = new Songs();
         alb = new Albums();
         status = Status.getInstance();
@@ -207,6 +210,8 @@ public class MainView implements PropertyChangeListener {
             public void handleEvent(Event event) {
                 String album = albumTable.getSelection()[0].getText(0);
                 Integer id = Integer.parseInt(album);
+                rest.getAlbumCover(alb.getAlbum(album));
+                updateAlbumTable();
                 songTable.removeAll();
                 for (Song song : so.getSongsForAlbum(id)) {
                     TableItem soitem = new TableItem(songTable, SWT.NONE);
@@ -284,6 +289,7 @@ public class MainView implements PropertyChangeListener {
                 setService.isertOrUpdateSetting(SettingsConstants.PASSWORD, pass.getText());
                 setService.isertOrUpdateSetting(SettingsConstants.SERVER, server.getText());
                 setService.isertOrUpdateSetting(SettingsConstants.APPNAME, appname.getText());
+                rest.refresh();
             }
         });
 
@@ -378,7 +384,6 @@ public class MainView implements PropertyChangeListener {
     private void updateConnectionState() {
         canvas = new Canvas(shell, SWT.NONE);
         canvas.setBounds(250, 10, 15, 15);
-        System.out.println("w$$$" + status.getState());
         canvas.addListener(SWT.Paint, new Listener() {
             public void handleEvent(Event event) {
                 switch (status.getState()) {

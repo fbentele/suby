@@ -13,7 +13,7 @@ public class Songs {
 	private RestBase rest = null;
 
 	public Songs() {
-		rest = new RestBase();
+		rest = RestBase.getInstance();
 	}
 
 	public List<Song> getSongsForAlbum(Integer id) {
