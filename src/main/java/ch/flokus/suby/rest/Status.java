@@ -30,9 +30,9 @@ public class Status {
     }
 
     public String testConnection() {
-        JSONObject obj = rest.getJson("ping.view");
         String status = "";
         try {
+            JSONObject obj = rest.getJson("ping.view");
             status = obj.getString("status");
             if (status.equals("failed")) {
                 setState(ServerStatus.ERROR);
