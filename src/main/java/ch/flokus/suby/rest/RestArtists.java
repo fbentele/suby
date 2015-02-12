@@ -9,10 +9,10 @@ import org.json.JSONObject;
 
 import ch.flokus.suby.model.Artist;
 
-public class Artists {
+public class RestArtists {
     private RestBase rest = null;
 
-    public Artists() {
+    public RestArtists() {
         rest = RestBase.getInstance();
     }
 

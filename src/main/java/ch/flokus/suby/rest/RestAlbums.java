@@ -10,10 +10,10 @@ import org.json.JSONObject;
 
 import ch.flokus.suby.model.Album;
 
-public class Albums {
+public class RestAlbums {
     private RestBase rest = null;
 
-    public Albums() {
+    public RestAlbums() {
         rest = RestBase.getInstance();
     }
 

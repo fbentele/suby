@@ -20,17 +20,17 @@ import org.eclipse.swt.widgets.TableItem;
 import ch.flokus.suby.model.Album;
 import ch.flokus.suby.model.Artist;
 import ch.flokus.suby.model.Song;
-import ch.flokus.suby.rest.Albums;
-import ch.flokus.suby.rest.Artists;
+import ch.flokus.suby.rest.RestAlbums;
+import ch.flokus.suby.rest.RestArtists;
 import ch.flokus.suby.rest.RestBase;
-import ch.flokus.suby.rest.Songs;
+import ch.flokus.suby.rest.RestSongs;
 import ch.flokus.suby.settings.AppConstants;
 
 public class MainView implements PropertyChangeListener {
     private RestBase rest;
-    private Artists interp;
-    private Albums alb;
-    private Songs so;
+    private RestArtists interp;
+    private RestAlbums alb;
+    private RestSongs so;
 
     private Display display;
     private Shell shell;
@@ -42,9 +42,9 @@ public class MainView implements PropertyChangeListener {
 
     public MainView() {
         rest = RestBase.getInstance();
-        so = new Songs();
-        alb = new Albums();
-        interp = new Artists();
+        so = new RestSongs();
+        alb = new RestAlbums();
+        interp = new RestArtists();
     }
 
     public void getMainView() {
@@ -147,7 +147,6 @@ public class MainView implements PropertyChangeListener {
                 playerView.getPlayer().resetPlaylist();
                 playerView.getPlayer().addToPlaylist(so.getSongsForAlbum(id));
                 playerView.getPlayer().startPlaylist();
-
             }
         });
 

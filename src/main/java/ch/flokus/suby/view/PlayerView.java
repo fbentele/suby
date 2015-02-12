@@ -129,7 +129,8 @@ public class PlayerView implements PropertyChangeListener {
                 plTi1.setText(1, song.getTitle());
                 plTi1.setText(2, song.getNiceDuration());
             }
-            playListTable.setSelection(Integer.valueOf((String) evt.getNewValue()) - 1);
+            Integer currently = Integer.parseInt(evt.getNewValue().toString()) - 1;
+            playListTable.setSelection(currently);
             updateCurrentlyPlaying();
         }
         if (evt.getPropertyName().equals("download")) {
