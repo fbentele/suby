@@ -10,7 +10,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,7 +67,13 @@ public class RestBase {
         try {
             URL server = new URL(restbase);
             String absolute = System.getProperty("user.home") + "/Music/Suby/" + song.getPath();
-            absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().-/\\ ]", "_");
+            System.out.println("---- before -----");
+            System.out.println(absolute);
+            absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().\\-/\\ ]", "_");
+            System.out.println("---- after -----");
+            System.out.println(absolute);
+            System.out.println("---------");
+            System.out.println("---------");
             File mp = new File(absolute);
             if (mp.exists()) {
                 System.out.println("already downloaded");
@@ -97,12 +102,11 @@ public class RestBase {
             URL server;
             try {
                 server = new URL(restbase);
-                String coverPath = System.getProperty("user.home") + "/Music/Suby/" + a.getArtist().replace("/", "_") + "/" + a.getName() + "/al-" + a.getId()
-                        + ".jpg";
+                String coverPath = System.getProperty("user.home") + "/Music/Suby/" + a.getArtist().replaceAll("/", "_") + "/"
+                        + a.getName().replaceAll("/", "_") + "/al-" + a.getId() + ".jpg";
                 File cover = new File(coverPath);
                 if (!cover.exists()) {
                     new AsyncDownloader(server, cover);
-                    // FileUtils.copyURLToFile(server, cover);
                 }
             } catch (MalformedURLException e1) {
                 e1.printStackTrace();
