@@ -1,17 +1,18 @@
 package ch.flokus.suby;
 
+import junit.framework.TestCase;
 import ch.flokus.suby.model.Album;
+import ch.flokus.suby.model.Artist;
 import ch.flokus.suby.model.Song;
 import ch.flokus.suby.rest.Albums;
-import ch.flokus.suby.rest.Interprets;
+import ch.flokus.suby.rest.Artists;
 import ch.flokus.suby.rest.Songs;
-import junit.framework.TestCase;
 
 public class RestTest extends TestCase {
     public void testInterpret() {
-        Interprets i = new Interprets();
-        for (String s : i.getAll()) {
-            System.out.println(s);
+        Artists i = new Artists();
+        for (Artist s : i.getAll()) {
+            System.out.println(s.getName());
         }
     }
 

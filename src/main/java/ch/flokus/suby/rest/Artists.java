@@ -7,15 +7,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Interprets {
+import ch.flokus.suby.model.Artist;
+
+public class Artists {
     private RestBase rest = null;
 
-    public Interprets() {
+    public Artists() {
         rest = RestBase.getInstance();
     }
 
-    public List<String> getAll() {
-        List<String> interprets = new ArrayList<String>();
+    public List<Artist> getAll() {
+        List<Artist> artists = new ArrayList<Artist>();
         JSONObject raw = rest.getJson("getArtists.view");
         try {
             JSONArray ijson = raw.getJSONObject("artists").getJSONArray("index");
@@ -25,10 +27,9 @@ public class Interprets {
                     JSONArray letart = letter.getJSONArray("artist");
                     for (int j = 0; j < letart.length(); j++) {
                         JSONObject thei = letart.getJSONObject(j);
-                        interprets.add(thei.getString("name") + " (" + thei.getInt("id") + ")");
+                        artists.add(new Artist(thei));
                     }
                 } catch (JSONException e) {
-                    // no interprets for letter
                     continue;
                 }
             }
@@ -41,6 +42,6 @@ public class Interprets {
         } catch (Exception e) {
 
         }
-        return interprets;
+        return artists;
     }
 }

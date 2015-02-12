@@ -45,7 +45,7 @@ public class Albums {
     }
 
     public Album getAlbum(String id) {
-        JSONObject raw = rest.getJson("getAlbum.view", "id", id.toString()).getJSONObject("album");
+        JSONObject raw = rest.getJson("getAlbum.view", "id", id).getJSONObject("album");
         Album a = new Album(raw);
         return a;
     }

@@ -123,9 +123,6 @@ public class SettingsView implements PropertyChangeListener {
                 case ERROR:
                     event.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
                     break;
-                case UNKNOWN:
-                    event.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
-                    break;
                 case OK:
                     event.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
                     break;

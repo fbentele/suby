@@ -13,7 +13,7 @@ public class AsyncDownloader {
         new Thread(t).start();
     }
 
-    private class ThreadedDownloader implements Runnable {
+    private static class ThreadedDownloader implements Runnable {
         private final URL url;
         private final File destination;
 

@@ -115,16 +115,18 @@ public class RestBase {
 
     private JSONObject request(String restbase) {
         URL server;
+        BufferedReader in;
         try {
             server = new URL(restbase);
             URLConnection connection = server.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
             String json = "";
             String inputLine;
+            StringBuilder jsonsb = new StringBuilder();
             while ((inputLine = in.readLine()) != null)
-                json += inputLine;
+                jsonsb.append(inputLine);
             in.close();
-            json = AppUtils.replaceAsciiChars(json);
+            json = AppUtils.replaceAsciiChars(jsonsb.toString());
             JSONObject obj = new JSONObject(json);
             if (obj.getJSONObject("subsonic-response").getString("status").equals("ok")) {
                 Status.getInstance().setState(ServerStatus.OK);
