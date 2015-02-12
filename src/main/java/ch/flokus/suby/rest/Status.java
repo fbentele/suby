@@ -15,14 +15,14 @@ public class Status {
     private List<PropertyChangeListener> listener = new ArrayList<PropertyChangeListener>();
 
     private static Status instance = null;
-    
+
     private Status() {
         rest = RestBase.getInstance();
         state = ServerStatus.UNKNOWN;
     }
-    
-    public static Status getInstance(){
-        if (instance == null){
+
+    public static Status getInstance() {
+        if (instance == null) {
             instance = new Status();
         }
         return instance;
@@ -30,10 +30,10 @@ public class Status {
 
     public String testConnection() {
         JSONObject obj = rest.getJson("ping.view");
-        String status = obj.getJSONObject("subsonic-response").getString("status");
+        String status = obj.getString("status");
         if (status.equals("failed")) {
             setState(ServerStatus.ERROR);
-            status = obj.getJSONObject("subsonic-response").getJSONObject("error").getString("message");
+            status = obj.getJSONObject("error").getString("message");
         } else if (status.equals("ok")) {
             setState(ServerStatus.OK);
         }

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -42,7 +41,7 @@ public class RestBase {
 
     public void refresh() {
         user = setService.getSetting(SettingsConstants.USERNAME);
-        pass = toHex(setService.getSetting(SettingsConstants.PASSWORD));
+        pass = AppUtils.toHex(setService.getSetting(SettingsConstants.PASSWORD));
         server = setService.getSetting(SettingsConstants.SERVER);
         appname = setService.getSetting(SettingsConstants.APPNAME);
     }
@@ -60,7 +59,7 @@ public class RestBase {
     public Song download(String songId) {
         // get song meta information
         JSONObject songmeta = getJson("getSong.view", "id", songId);
-        songmeta = songmeta.getJSONObject("subsonic-response").getJSONObject("song");
+        songmeta = songmeta.getJSONObject("song");
         Song song = new Song(songmeta);
         // url for song download
         String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;
@@ -96,7 +95,7 @@ public class RestBase {
                 + "&size=100";
         try {
             JSONObject o = request(restbase);
-            if (o.getJSONObject("subsonic-response").get("status").equals("failed"))
+            if (o.get("status").equals("failed"))
                 return;
         } catch (JSONException e) {
             URL server;
@@ -129,10 +128,12 @@ public class RestBase {
             JSONObject obj = new JSONObject(json);
             if (obj.getJSONObject("subsonic-response").getString("status").equals("ok")) {
                 Status.getInstance().setState(ServerStatus.OK);
+                return obj.getJSONObject("subsonic-response");
             } else {
-                Status.getInstance().setState(ServerStatus.ERROR);
+                String error = obj.getJSONObject("error").getString("message");
+                System.out.println(error);
+                Status.getInstance().setState(ServerStatus.UNKNOWN);
             }
-            return obj;
         } catch (MalformedURLException e1) {
             Status.getInstance().setState(ServerStatus.ERROR);
             e1.printStackTrace();
@@ -141,9 +142,5 @@ public class RestBase {
             e1.printStackTrace();
         }
         return new JSONObject();
-    }
-
-    public String toHex(String string) {
-        return String.format("%040x", new BigInteger(1, string.getBytes(Charset.defaultCharset())));
     }
 }

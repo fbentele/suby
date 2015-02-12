@@ -18,7 +18,7 @@ public class Interprets {
         List<String> interprets = new ArrayList<String>();
         JSONObject raw = rest.getJson("getArtists.view");
         try {
-            JSONArray ijson = raw.getJSONObject("subsonic-response").getJSONObject("artists").getJSONArray("index");
+            JSONArray ijson = raw.getJSONObject("artists").getJSONArray("index");
             for (int i = 0; i < ijson.length(); i++) {
                 JSONObject letter = ijson.getJSONObject(i);
                 try {
@@ -33,10 +33,10 @@ public class Interprets {
                 }
             }
         } catch (JSONException e) {
-            
+
         }
         try {
-            String error = raw.getJSONObject("subsonic-response").getJSONObject("error").getString("message");
+            String error = raw.getJSONObject("error").getString("message");
             System.out.println(error);
         } catch (Exception e) {
 
