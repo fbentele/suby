@@ -24,6 +24,7 @@ import ch.flokus.suby.rest.RestAlbums;
 import ch.flokus.suby.rest.RestArtists;
 import ch.flokus.suby.rest.RestBase;
 import ch.flokus.suby.rest.RestSongs;
+import ch.flokus.suby.rest.Status;
 import ch.flokus.suby.settings.AppConstants;
 
 public class MainView implements PropertyChangeListener {
@@ -36,7 +37,7 @@ public class MainView implements PropertyChangeListener {
     private Shell shell;
     private Table albumTable;
     private Table artistTable;
-
+    private Table songTable;
     private SettingsView settingsView;
     private PlayerView playerView;
 
@@ -45,6 +46,7 @@ public class MainView implements PropertyChangeListener {
         so = new RestSongs();
         alb = new RestAlbums();
         interp = new RestArtists();
+        Status.getInstance().addChangeListener(this);
     }
 
     public void getMainView() {
@@ -83,7 +85,7 @@ public class MainView implements PropertyChangeListener {
         albumCol2.setWidth(205);
         albumCol3.setWidth(40);
 
-        final Table songTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+        songTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         songTable.setBounds(690, 180, 300, 300);
         TableColumn col1 = new TableColumn(songTable, SWT.NONE);
         TableColumn col2 = new TableColumn(songTable, SWT.NONE);
@@ -171,9 +173,16 @@ public class MainView implements PropertyChangeListener {
         if (evt.getPropertyName().equals("download")) {
             updateAlbumTable();
         }
+        if (evt.getPropertyName().equals("serverState")) {
+            refreshArtistList();
+        }
     }
 
     private void refreshArtistList() {
+        artistTable.removeAll();
+        albumTable.removeAll();
+        songTable.removeAll();
+
         for (Artist artist : interp.getAll()) {
             TableItem item = new TableItem(artistTable, SWT.NONE);
             item.setText(new String[] { artist.getId(), artist.getName() });

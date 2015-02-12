@@ -26,8 +26,8 @@ public class RestArtists {
                 try {
                     JSONArray letart = letter.getJSONArray("artist");
                     for (int j = 0; j < letart.length(); j++) {
-                        JSONObject thei = letart.getJSONObject(j);
-                        artists.add(new Artist(thei));
+                        JSONObject theArtist = letart.getJSONObject(j);
+                        artists.add(new Artist(theArtist));
                     }
                 } catch (JSONException e) {
                     continue;

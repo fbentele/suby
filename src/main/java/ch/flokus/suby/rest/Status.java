@@ -47,8 +47,10 @@ public class Status {
     }
 
     public void setState(ServerStatus s) {
-        notifyListeners(this, "serverState", state.toString(), s.toString());
-        this.state = s;
+        if (!state.equals(s)) {
+            this.state = s;
+            notifyListeners(this, "serverState", state.toString(), s.toString());
+        }
     }
 
     public ServerStatus getState() {

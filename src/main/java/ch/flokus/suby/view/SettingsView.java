@@ -109,6 +109,7 @@ public class SettingsView implements PropertyChangeListener {
         connect.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
+                status.testConnection();
                 updateConnectionState();
             }
         });
