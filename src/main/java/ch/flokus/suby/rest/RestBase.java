@@ -138,10 +138,12 @@ public class RestBase {
             }
         } catch (MalformedURLException e1) {
             Status.getInstance().setState(ServerStatus.ERROR);
-            e1.printStackTrace();
+            System.out.println(e1.getMessage());
         } catch (IOException e1) {
             Status.getInstance().setState(ServerStatus.ERROR);
-            e1.printStackTrace();
+            System.out.println(e1.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Can not establish connection to url " + restbase);
         }
         return new JSONObject();
     }

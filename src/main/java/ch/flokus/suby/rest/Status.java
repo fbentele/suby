@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import ch.flokus.suby.enums.ServerStatus;
@@ -30,12 +31,17 @@ public class Status {
 
     public String testConnection() {
         JSONObject obj = rest.getJson("ping.view");
-        String status = obj.getString("status");
-        if (status.equals("failed")) {
-            setState(ServerStatus.ERROR);
-            status = obj.getJSONObject("error").getString("message");
-        } else if (status.equals("ok")) {
-            setState(ServerStatus.OK);
+        String status = "";
+        try {
+            status = obj.getString("status");
+            if (status.equals("failed")) {
+                setState(ServerStatus.ERROR);
+                status = obj.getJSONObject("error").getString("message");
+            } else if (status.equals("ok")) {
+                setState(ServerStatus.OK);
+            }
+        } catch (JSONException e) {
+            status = "error parsing JSON";
         }
         return status;
     }
