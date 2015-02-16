@@ -144,6 +144,8 @@ public class RestBase {
             System.out.println(e1.getMessage());
         } catch (IllegalArgumentException e) {
             System.out.println("Can not establish connection to url " + restbase);
+        } catch (JSONException e) {
+            System.out.println("Json Exception occured: " + e.getMessage());
         }
         return new JSONObject();
     }
