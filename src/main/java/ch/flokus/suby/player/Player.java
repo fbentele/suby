@@ -2,6 +2,7 @@ package ch.flokus.suby.player;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,27 +39,38 @@ public class Player {
         if (mediaPlayer != null)
             mediaPlayer.stop();
 
-        current = new Media(song.getPath());
-        mediaPlayer = new MediaPlayer(current);
+        if (new File(song.getPath()).isFile()) {
+            current = new Media(song.getPath());
+            mediaPlayer = new MediaPlayer(current);
 
-        // preload next song
-        mediaPlayer.setOnReady(new Runnable() {
-            @Override
-            public void run() {
-                if (playList.hasNext()) {
-                    rest.download(playList.getNext().getId());
-                    playList.getPrevious();
+            // preload next song
+            mediaPlayer.setOnReady(new Runnable() {
+                @Override
+                public void run() {
+                    if (playList.hasNext()) {
+                        rest.download(playList.getNext().getId());
+                        playList.getPrevious();
+                    }
                 }
-            }
-        });
+            });
 
-        // play next song
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
-            public void run() {
-                playNext();
-            }
-        });
-        mediaPlayer.play();
+            // play next song
+            mediaPlayer.setOnEndOfMedia(new Runnable() {
+                public void run() {
+                    playNext();
+                }
+            });
+
+            mediaPlayer.setOnError(new Runnable() {
+                public void run() {
+                    playNext();
+                }
+            });
+
+            mediaPlayer.play();
+        } else {
+            playNext();
+        }
     }
 
     public void playNext() {
@@ -66,7 +78,8 @@ public class Player {
         if (next != null && next.getId() != null) {
             play(next.getId());
         } else {
-            mediaPlayer.stop();
+            if (mediaPlayer != null)
+                mediaPlayer.stop();
         }
     }
 
