@@ -26,7 +26,7 @@ public class Playlist {
     }
 
     public Song getPrevious() {
-        if (thePlaylist.size() > currentPosition && currentPosition > 1) {
+        if (thePlaylist.size() >= currentPosition && currentPosition > 1) {
             currentPosition--;
             notifyListeners(this, "currentPosition", String.valueOf(currentPosition + 1), String.valueOf(currentPosition));
             return thePlaylist.get(currentPosition - 1);
@@ -62,7 +62,7 @@ public class Playlist {
     }
 
     public Song getCurrent() {
-        if (thePlaylist.size() > currentPosition) {
+        if (thePlaylist.size() > currentPosition && currentPosition > 0) {
             return thePlaylist.get(currentPosition - 1);
         }
         return null;
