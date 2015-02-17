@@ -20,6 +20,8 @@ public class AppUtils {
         s = s.replaceAll("&#246;", "ö");
         s = s.replaceAll("&#252;", "ü");
         s = s.replaceAll("&#776;", "ö");
+        s = s.replaceAll("&#215;", "×");
+
         return s;
     }
 
