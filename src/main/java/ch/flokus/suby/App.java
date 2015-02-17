@@ -12,10 +12,12 @@ import com.j256.ormlite.support.ConnectionSource;
  *
  */
 public class App {
-	public static void main(String[] args) throws Exception {
-		ConnectionSource connectionSource = DBSource.getConnection();
-		MainView w = new MainView();
-		w.getMainView();
-		connectionSource.close();
-	}
+    public static MainView w;
+
+    public static void main(String[] args) throws Exception {
+        ConnectionSource connectionSource = DBSource.getConnection();
+        w = new MainView();
+        w.getMainView();
+        connectionSource.close();
+    }
 }

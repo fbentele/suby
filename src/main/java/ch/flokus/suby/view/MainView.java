@@ -28,10 +28,10 @@ import ch.flokus.suby.rest.Status;
 import ch.flokus.suby.settings.AppConstants;
 
 public class MainView implements PropertyChangeListener {
-    private RestBase rest;
-    private RestArtists interp;
-    private RestAlbums alb;
-    private RestSongs so;
+    private RestBase restService;
+    private RestArtists artistService;
+    private RestAlbums albumService;
+    private RestSongs songService;
 
     private Display display;
     private Shell shell;
@@ -42,10 +42,10 @@ public class MainView implements PropertyChangeListener {
     private PlayerView playerView;
 
     public MainView() {
-        rest = RestBase.getInstance();
-        so = new RestSongs();
-        alb = new RestAlbums();
-        interp = new RestArtists();
+        restService = RestBase.getInstance();
+        songService = new RestSongs();
+        albumService = new RestAlbums();
+        artistService = new RestArtists();
         Status.getInstance().addChangeListener(this);
     }
 
@@ -78,9 +78,11 @@ public class MainView implements PropertyChangeListener {
         albumTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         albumTable.setBounds(310, 180, 370, 300);
         albumTable.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
+        TableColumn albumCol0 = new TableColumn(albumTable, SWT.NONE);
         TableColumn albumCol1 = new TableColumn(albumTable, SWT.NONE);
         TableColumn albumCol2 = new TableColumn(albumTable, SWT.NONE);
         TableColumn albumCol3 = new TableColumn(albumTable, SWT.NONE);
+        albumCol0.setWidth(0);
         albumCol1.setWidth(105);
         albumCol2.setWidth(205);
         albumCol3.setWidth(40);
@@ -113,16 +115,16 @@ public class MainView implements PropertyChangeListener {
                     albumTable.removeAll();
 
                     songTable.removeAll();
-                    for (Album album : alb.getAllForArtist(id)) {
-                        TableItem titem = new TableItem(albumTable, SWT.NONE);
-                        titem.setText(new String[] { album.getId(), album.getName(), album.getYear() });
+                    for (Album album : albumService.getAllForArtist(id)) {
+                        TableItem tableItem = new TableItem(albumTable, SWT.NONE);
+                        tableItem.setText(new String[] { album.getId(), "", album.getName(), album.getYear() });
                         Image albumArt;
                         try {
                             albumArt = new Image(display, album.getFullCoverArtPath());
                         } catch (SWTException swte) {
                             albumArt = new Image(display, Thread.currentThread().getContextClassLoader().getResourceAsStream("img/nocover.png"));
                         }
-                        titem.setImage(0, albumArt);
+                        tableItem.setImage(1, albumArt);
                     }
                 }
             }
@@ -132,10 +134,9 @@ public class MainView implements PropertyChangeListener {
             public void handleEvent(Event event) {
                 String album = albumTable.getSelection()[0].getText(0);
                 Integer id = Integer.parseInt(album);
-                rest.getAlbumCover(alb.getAlbum(album));
-                updateAlbumTable();
+                restService.getAlbumCover(albumService.getAlbum(album));
                 songTable.removeAll();
-                for (Song song : so.getSongsForAlbum(id)) {
+                for (Song song : songService.getSongsForAlbum(id)) {
                     TableItem soitem = new TableItem(songTable, SWT.NONE);
                     soitem.setText(new String[] { song.getId(), song.getTitle(), song.getNiceDuration() });
                 }
@@ -147,7 +148,7 @@ public class MainView implements PropertyChangeListener {
                 String album = albumTable.getSelection()[0].getText(0);
                 Integer id = Integer.parseInt(album);
                 playerView.getPlayer().resetPlaylist();
-                playerView.getPlayer().addToPlaylist(so.getSongsForAlbum(id));
+                playerView.getPlayer().addToPlaylist(songService.getSongsForAlbum(id));
                 playerView.getPlayer().startPlaylist();
             }
         });
@@ -176,6 +177,13 @@ public class MainView implements PropertyChangeListener {
         if (evt.getPropertyName().equals("serverState")) {
             refreshArtistList();
         }
+        if (evt.getPropertyName().equals("AsyncDownloader")) {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    updateAlbumTable();
+                }
+            });
+        }
     }
 
     private void refreshArtistList() {
@@ -183,22 +191,23 @@ public class MainView implements PropertyChangeListener {
         albumTable.removeAll();
         songTable.removeAll();
 
-        for (Artist artist : interp.getAll()) {
+        for (Artist artist : artistService.getAll()) {
             TableItem item = new TableItem(artistTable, SWT.NONE);
             item.setText(new String[] { artist.getId(), artist.getName() });
         }
     }
 
     private void updateAlbumTable() {
-        TableItem selected = albumTable.getSelection()[0];
-        Album a = alb.getAlbum(selected.getText(0));
-        File f = new File(a.getFullCoverArtPath());
-        Image albumArt;
-        if (f.exists()) {
-            albumArt = new Image(display, a.getFullCoverArtPath());
-        } else {
-            albumArt = new Image(display, Thread.currentThread().getContextClassLoader().getResourceAsStream("img/nocover.png"));
+        for (TableItem raw : albumTable.getItems()) {
+            Album a = albumService.getAlbum(raw.getText(0));
+            File f = new File(a.getFullCoverArtPath());
+            Image albumArt;
+            if (f.exists()) {
+                albumArt = new Image(display, a.getFullCoverArtPath());
+            } else {
+                albumArt = new Image(display, Thread.currentThread().getContextClassLoader().getResourceAsStream("img/nocover.png"));
+            }
+            raw.setImage(1, albumArt);
         }
-        selected.setImage(0, albumArt);
     }
 }

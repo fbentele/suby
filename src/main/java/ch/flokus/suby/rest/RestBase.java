@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ch.flokus.suby.App;
 import ch.flokus.suby.enums.ServerStatus;
 import ch.flokus.suby.model.Album;
 import ch.flokus.suby.model.Song;
@@ -71,14 +72,12 @@ public class RestBase {
             absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().\\-/\\ ]", "_");
             System.out.println("---- after -----");
             System.out.println(absolute);
-            System.out.println("---------");
-            System.out.println("---------");
             File mp = new File(absolute);
             if (mp.exists()) {
                 System.out.println("already downloaded");
             } else {
                 System.out.println("downloading...");
-                new AsyncDownloader(server, mp);
+                new AsyncDownloader(server, mp, App.w);
                 System.out.println("done!");
             }
             absolute = "file://" + absolute.replaceAll(" ", "%20");
@@ -94,22 +93,15 @@ public class RestBase {
         String restbase = server + "/rest/getCoverArt.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + a.getCoverArt()
                 + "&size=100";
         try {
-            JSONObject o = request(restbase);
-            if (o.get("status").equals("failed"))
-                return;
-        } catch (JSONException e) {
-            URL server;
-            try {
-                server = new URL(restbase);
-                String coverPath = System.getProperty("user.home") + "/Music/Suby/" + a.getArtist().replaceAll("/", "_") + "/"
-                        + a.getName().replaceAll("/", "_") + "/al-" + a.getId() + ".jpg";
-                File cover = new File(coverPath);
-                if (!cover.exists()) {
-                    new AsyncDownloader(server, cover);
-                }
-            } catch (MalformedURLException e1) {
-                e1.printStackTrace();
+            URL server = new URL(restbase);
+            String coverPath = System.getProperty("user.home") + "/Music/Suby/" + a.getArtist().replaceAll("/", "_") + "/" + a.getName().replaceAll("/", "_")
+                    + "/al-" + a.getId() + ".jpg";
+            File cover = new File(coverPath);
+            if (!cover.exists()) {
+                new AsyncDownloader(server, cover, App.w);
             }
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
         }
     }
 
@@ -146,6 +138,7 @@ public class RestBase {
             System.out.println("Can not establish connection to url " + restbase);
         } catch (JSONException e) {
             System.out.println("Json Exception occured: " + e.getMessage());
+            System.out.println("for url: " + restbase);
         }
         return new JSONObject();
     }

@@ -26,6 +26,7 @@ public class RestSongs {
                 songlist.add(new Song(current));
             }
         } catch (JSONException e) {
+            System.out.println("getSongsForAlbum in Class: " + this.getClass().getName());
             System.out.println(e.getMessage());
         }
         return songlist;
