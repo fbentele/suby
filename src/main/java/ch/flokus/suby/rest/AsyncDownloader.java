@@ -26,7 +26,8 @@ public class AsyncDownloader {
             try {
                 FileUtils.copyURLToFile(url, destination);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Got Error from server: " + url);
+                System.out.println(e.getMessage());
             }
         }
     }
