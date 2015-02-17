@@ -2,12 +2,12 @@ package ch.flokus.suby.player;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import ch.flokus.suby.model.Song;
@@ -38,8 +38,7 @@ public class Player {
         notifyListeners(this, "download", "", song.getCoverArt());
         if (mediaPlayer != null)
             mediaPlayer.stop();
-
-        if (new File(song.getPath()).isFile()) {
+        try {
             current = new Media(song.getPath());
             mediaPlayer = new MediaPlayer(current);
 
@@ -68,7 +67,7 @@ public class Player {
             });
 
             mediaPlayer.play();
-        } else {
+        } catch (MediaException e) {
             playNext();
         }
     }
