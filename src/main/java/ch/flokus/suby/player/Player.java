@@ -15,6 +15,7 @@ import ch.flokus.suby.rest.RestBase;
 
 public class Player {
     private Media current = null;
+    private Song currentSong = null;
     private MediaPlayer mediaPlayer = null;
     private Playlist playList = null;
     private RestBase rest = null;
@@ -33,13 +34,13 @@ public class Player {
     }
 
     public void play(String id) {
-        Song song = rest.download(id);
+        currentSong = rest.download(id);
 
-        notifyListeners(this, "download", "", song.getCoverArt());
+        notifyListeners(this, "download", "", currentSong.getCoverArt());
         if (mediaPlayer != null)
             mediaPlayer.stop();
         try {
-            current = new Media(song.getPath());
+            current = new Media(currentSong.getPath());
             mediaPlayer = new MediaPlayer(current);
 
             // preload next song
@@ -127,4 +128,7 @@ public class Player {
         listener.add(newListener);
     }
 
+    public Song getCurrentlyPlaying() {
+        return currentSong;
+    }
 }

@@ -103,7 +103,6 @@ public class MainView implements PropertyChangeListener {
         aCol1.setWidth(0);
         aCol2.setWidth(260);
 
-        refreshArtistList();
         settingsView.updateConnectionState();
 
         artistTable.addListener(SWT.Selection, new Listener() {
@@ -113,7 +112,6 @@ public class MainView implements PropertyChangeListener {
                     String interpret = artistTable.getItem(selection[0]).getText(0);
                     Integer id = Integer.parseInt(interpret);
                     albumTable.removeAll();
-
                     songTable.removeAll();
                     for (Album album : albumService.getAllForArtist(id)) {
                         TableItem tableItem = new TableItem(albumTable, SWT.NONE);
@@ -187,6 +185,7 @@ public class MainView implements PropertyChangeListener {
     }
 
     private void refreshArtistList() {
+        System.out.println("printing artists");
         artistTable.removeAll();
         albumTable.removeAll();
         songTable.removeAll();

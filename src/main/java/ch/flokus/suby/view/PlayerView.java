@@ -104,7 +104,8 @@ public class PlayerView implements PropertyChangeListener {
     }
 
     private void updateCurrentlyPlaying() {
-        Song cur = playList.getCurrent();
+        Song cur = player.getCurrentlyPlaying();
+
         if (cur != null) {
             currentAlbum.setText(cur.getAlbum());
             currentArtist.setText(cur.getArtist());

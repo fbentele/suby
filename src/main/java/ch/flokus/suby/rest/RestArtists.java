@@ -16,6 +16,7 @@ public class RestArtists {
         rest = RestBase.getInstance();
     }
 
+    // TODO refactoring needed
     public List<Artist> getAll() {
         List<Artist> artists = new ArrayList<Artist>();
         JSONObject raw = rest.getJson("getArtists.view");
@@ -30,11 +31,12 @@ public class RestArtists {
                         artists.add(new Artist(theArtist));
                     }
                 } catch (JSONException e) {
+                    System.out.println("Problem parsing Artist JSON: " + e.getMessage());
                     continue;
                 }
             }
         } catch (JSONException e) {
-
+            System.out.println("Problem getting Artist JSON: " + e.getMessage());
         }
         try {
             String error = raw.getJSONObject("error").getString("message");
