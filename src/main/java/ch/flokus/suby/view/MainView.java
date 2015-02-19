@@ -103,8 +103,6 @@ public class MainView implements PropertyChangeListener {
         aCol1.setWidth(0);
         aCol2.setWidth(260);
 
-        settingsView.updateConnectionState();
-
         artistTable.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {
                 int[] selection = artistTable.getSelectionIndices();
@@ -146,6 +144,7 @@ public class MainView implements PropertyChangeListener {
                 String album = albumTable.getSelection()[0].getText(0);
                 Integer id = Integer.parseInt(album);
                 playerView.getPlayer().resetPlaylist();
+                playerView.setDownloading();
                 playerView.getPlayer().addToPlaylist(songService.getSongsForAlbum(id));
                 playerView.getPlayer().startPlaylist();
             }
@@ -159,6 +158,7 @@ public class MainView implements PropertyChangeListener {
             }
         });
 
+        Status.getInstance().testConnection();
         shell.open();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {

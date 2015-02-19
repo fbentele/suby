@@ -103,6 +103,10 @@ public class PlayerView implements PropertyChangeListener {
         });
     }
 
+    public void setDownloading() {
+        currentAlbum.setText("Downloading...");
+    }
+
     private void updateCurrentlyPlaying() {
         Song cur = player.getCurrentlyPlaying();
 

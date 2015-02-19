@@ -34,7 +34,7 @@ public class Player {
     }
 
     public void play(String id) {
-        currentSong = rest.download(id);
+        currentSong = rest.download(id, true);
 
         notifyListeners(this, "download", "", currentSong.getCoverArt());
         if (mediaPlayer != null)
@@ -48,7 +48,7 @@ public class Player {
                 @Override
                 public void run() {
                     if (playList.hasNext()) {
-                        rest.download(playList.getNext().getId());
+                        rest.download(playList.getNext().getId(), true);
                         playList.getPrevious();
                     }
                 }

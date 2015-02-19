@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,7 +58,7 @@ public class RestBase {
         return request(restbase);
     }
 
-    public Song download(String songId) {
+    public Song download(String songId, boolean async) {
         // get song meta information
         JSONObject songmeta = getJson("getSong.view", "id", songId);
         songmeta = songmeta.getJSONObject("song");
@@ -74,17 +75,22 @@ public class RestBase {
             System.out.println(absolute);
             File mp = new File(absolute);
             if (mp.exists()) {
-                System.out.println("already downloaded");
+                System.out.println(songId + ": already downloaded");
             } else {
-                System.out.println("downloading...");
-                new AsyncDownloader(server, mp, App.w);
-                System.out.println("done!");
+                System.out.println("downloading id:" + songId);
+                if (async) {
+                    new AsyncDownloader(server, mp, App.mainView);
+                } else {
+                    FileUtils.copyURLToFile(server, mp);
+                }
             }
             absolute = "file://" + absolute.replaceAll(" ", "%20");
             song.setPath(absolute);
             return song;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            System.out.println("URL is malformed: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("");
         }
         return null;
     }
@@ -98,7 +104,7 @@ public class RestBase {
                     + "/al-" + a.getId() + ".jpg";
             File cover = new File(coverPath);
             if (!cover.exists()) {
-                new AsyncDownloader(server, cover, App.w);
+                new AsyncDownloader(server, cover, App.mainView);
             }
         } catch (MalformedURLException e1) {
             e1.printStackTrace();
