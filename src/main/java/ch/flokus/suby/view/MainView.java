@@ -223,7 +223,13 @@ public class MainView implements PropertyChangeListener {
 			File f = new File(a.getFullCoverArtPath());
 			Image albumArt;
 			if (f.exists()) {
-				albumArt = new Image(display, a.getFullCoverArtPath());
+				try {
+					albumArt = new Image(display, a.getFullCoverArtPath());
+				} catch (SWTException e) {
+					System.out.println("album cover art error");
+					albumArt = new Image(display, Thread.currentThread().getContextClassLoader()
+							.getResourceAsStream("img/nocover.png"));
+				}
 			} else {
 				albumArt = new Image(display, Thread.currentThread().getContextClassLoader()
 						.getResourceAsStream("img/nocover.png"));

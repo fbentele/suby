@@ -42,12 +42,12 @@ public class PlayerView implements PropertyChangeListener {
 	public void getPlayerView() {
 		currentArtist = new Label(composite, SWT.BORDER);
 		currentArtist.setText("");
-		currentArtist.setBounds(280, 10, 130, 20);
+		currentArtist.setBounds(280, 10, 170, 20);
 		currentAlbum = new Label(composite, SWT.BORDER);
-		currentAlbum.setBounds(280, 30, 130, 20);
+		currentAlbum.setBounds(280, 30, 170, 20);
 		currentAlbum.setText("");
 		currentSong = new Label(composite, SWT.BORDER);
-		currentSong.setBounds(280, 50, 130, 20);
+		currentSong.setBounds(280, 50, 170, 20);
 		currentSong.setText("");
 		currentAlbumArtContainer = new Label(composite, SWT.BORDER);
 		currentAlbumArtContainer.setBounds(170, 10, 100, 100);
@@ -56,7 +56,7 @@ public class PlayerView implements PropertyChangeListener {
 		currentAlbumArtContainer.setImage(currentAlbumArt);
 
 		playListTable = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION);
-		playListTable.setBounds(500, 10, 450, 150);
+		playListTable.setBounds(500, 10, 450, 100);
 		TableColumn plTc1 = new TableColumn(playListTable, SWT.NONE);
 		TableColumn plTc2 = new TableColumn(playListTable, SWT.NONE);
 		TableColumn plTc3 = new TableColumn(playListTable, SWT.NONE);
