@@ -118,6 +118,12 @@ public class Player {
 				String.valueOf(Status.PLAYING));
 	}
 
+	public void setSeek(int percent) {
+		int i = Integer.valueOf(currentSong.getDuration()) * percent * 10;
+		System.out.println("aand" + i);
+		mediaPlayer.seek(new Duration(i));
+	}
+
 	public void addToPlaylist(List<Song> list) {
 		playList.appendAll(list);
 	}

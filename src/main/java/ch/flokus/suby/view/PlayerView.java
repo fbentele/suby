@@ -7,6 +7,8 @@ import javafx.util.Duration;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -32,7 +34,8 @@ public class PlayerView implements PropertyChangeListener {
 	private Label currentArtist;
 	private Label currentAlbum;
 	private Label currentSong;
-	private Label currentProgress;
+	private Label currentTime;
+	private Label maxTime;
 	private ProgressBar currentProgressbar;
 	private Label currentAlbumArtContainer;
 	private Table playListTable;
@@ -47,18 +50,33 @@ public class PlayerView implements PropertyChangeListener {
 
 	public void getPlayerView() {
 		currentArtist = new Label(composite, SWT.BORDER);
-		currentArtist.setText("");
 		currentArtist.setBounds(280, 10, 200, 20);
 		currentAlbum = new Label(composite, SWT.BORDER);
 		currentAlbum.setBounds(280, 30, 200, 20);
-		currentAlbum.setText("");
 		currentSong = new Label(composite, SWT.BORDER);
-		currentSong.setBounds(280, 50, 200, 20);
-		currentSong.setText("");
-		currentProgress = new Label(composite, SWT.BORDER);
-		currentProgress.setBounds(280, 70, 200, 20);
+		currentSong.setBounds(280, 50, 250, 20);
+		currentTime = new Label(composite, SWT.BORDER);
+		currentTime.setBounds(280, 70, 50, 20);
+		maxTime = new Label(composite, SWT.BORDER);
+		maxTime.setBounds(440, 70, 50, 20);
 		currentProgressbar = new ProgressBar(composite, SWT.SMOOTH);
-		currentProgressbar.setBounds(280, 90, 200, 20);
+		currentProgressbar.setBounds(280, 80, 200, 30);
+		currentProgressbar.setVisible(false);
+		currentProgressbar.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseDown(MouseEvent e) {
+				player.setSeek(e.x * 100 / currentProgressbar.getBounds().width);
+				System.out.println("whuat: " + e.x * 100 / currentProgressbar.getBounds().width);
+			}
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+		});
 
 		currentAlbumArtContainer = new Label(composite, SWT.BORDER);
 		currentAlbumArtContainer.setBounds(170, 10, 100, 100);
@@ -75,7 +93,6 @@ public class PlayerView implements PropertyChangeListener {
 		plTc2.setWidth(230);
 		plTc3.setWidth(40);
 		Button play = new Button(composite, SWT.PUSH);
-
 		play.setImage(new Image(Display.getCurrent(), Thread.currentThread()
 				.getContextClassLoader().getResourceAsStream("img/play.png")));
 		play.setBounds(30, 10, 50, 50);
@@ -125,12 +142,13 @@ public class PlayerView implements PropertyChangeListener {
 
 	private void updateCurrentlyPlaying() {
 		Song cur = player.getCurrentlyPlaying();
-
 		if (cur != null) {
 			currentAlbum.setText(cur.getAlbum());
 			currentArtist.setText(cur.getArtist());
 			currentSong.setText(cur.getTitle());
-			currentProgress.setText("00:00");
+			currentTime.setText("00:00");
+			currentProgressbar.setVisible(true);
+			maxTime.setText(AppUtils.getNiceTime(cur.getDuration()));
 			try {
 				Image currentAlbumArt = new Image(Display.getCurrent(), cur.getFullCoverArtPath());
 				currentAlbumArtContainer.setImage(currentAlbumArt);
@@ -144,7 +162,7 @@ public class PlayerView implements PropertyChangeListener {
 
 	private void updateTime(Duration newValue) {
 		Song cur = player.getCurrentlyPlaying();
-		currentProgress.setText(AppUtils.getNiceTime(newValue.toSeconds()));
+		currentTime.setText(AppUtils.getNiceTime(newValue.toSeconds()));
 		currentProgressbar.setSelection(AppUtils.getPercentage(cur.getDuration(),
 				newValue.toSeconds()));
 	}
