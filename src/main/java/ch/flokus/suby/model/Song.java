@@ -3,6 +3,8 @@ package ch.flokus.suby.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ch.flokus.suby.service.AppUtils;
+
 public class Song {
 	private String id;
 	private String title;
@@ -100,18 +102,7 @@ public class Song {
 	}
 
 	public String getNiceDuration() {
-		Float raw = Float.valueOf(duration);
-		int min = (int) (raw / 60);
-		int sec = (int) (raw % 60);
-		String mins = "" + min;
-		String secs = "" + sec;
-		if (min < 10)
-			mins = "0" + mins;
-
-		if (sec < 10)
-			secs = "0" + secs;
-
-		return mins + ":" + secs;
+		return AppUtils.getNiceTime(duration);
 	}
 
 	public void setDuration(String duration) {

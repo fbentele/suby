@@ -3,6 +3,8 @@ package ch.flokus.suby.view;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javafx.util.Duration;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -12,6 +14,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -19,6 +22,7 @@ import org.eclipse.swt.widgets.TableItem;
 import ch.flokus.suby.model.Song;
 import ch.flokus.suby.player.Player;
 import ch.flokus.suby.player.Playlist;
+import ch.flokus.suby.service.AppUtils;
 
 public class PlayerView implements PropertyChangeListener {
 	private Playlist playList;
@@ -28,6 +32,8 @@ public class PlayerView implements PropertyChangeListener {
 	private Label currentArtist;
 	private Label currentAlbum;
 	private Label currentSong;
+	private Label currentProgress;
+	private ProgressBar currentProgressbar;
 	private Label currentAlbumArtContainer;
 	private Table playListTable;
 
@@ -42,13 +48,18 @@ public class PlayerView implements PropertyChangeListener {
 	public void getPlayerView() {
 		currentArtist = new Label(composite, SWT.BORDER);
 		currentArtist.setText("");
-		currentArtist.setBounds(280, 10, 170, 20);
+		currentArtist.setBounds(280, 10, 200, 20);
 		currentAlbum = new Label(composite, SWT.BORDER);
-		currentAlbum.setBounds(280, 30, 170, 20);
+		currentAlbum.setBounds(280, 30, 200, 20);
 		currentAlbum.setText("");
 		currentSong = new Label(composite, SWT.BORDER);
-		currentSong.setBounds(280, 50, 170, 20);
+		currentSong.setBounds(280, 50, 200, 20);
 		currentSong.setText("");
+		currentProgress = new Label(composite, SWT.BORDER);
+		currentProgress.setBounds(280, 70, 200, 20);
+		currentProgressbar = new ProgressBar(composite, SWT.SMOOTH);
+		currentProgressbar.setBounds(280, 90, 200, 20);
+
 		currentAlbumArtContainer = new Label(composite, SWT.BORDER);
 		currentAlbumArtContainer.setBounds(170, 10, 100, 100);
 		Image currentAlbumArt = new Image(Display.getCurrent(), Thread.currentThread()
@@ -119,6 +130,7 @@ public class PlayerView implements PropertyChangeListener {
 			currentAlbum.setText(cur.getAlbum());
 			currentArtist.setText(cur.getArtist());
 			currentSong.setText(cur.getTitle());
+			currentProgress.setText("00:00");
 			try {
 				Image currentAlbumArt = new Image(Display.getCurrent(), cur.getFullCoverArtPath());
 				currentAlbumArtContainer.setImage(currentAlbumArt);
@@ -128,6 +140,13 @@ public class PlayerView implements PropertyChangeListener {
 				currentAlbumArtContainer.setImage(currentAlbumArt);
 			}
 		}
+	}
+
+	private void updateTime(Duration newValue) {
+		Song cur = player.getCurrentlyPlaying();
+		currentProgress.setText(AppUtils.getNiceTime(newValue.toSeconds()));
+		currentProgressbar.setSelection(AppUtils.getPercentage(cur.getDuration(),
+				newValue.toSeconds()));
 	}
 
 	@Override
@@ -146,6 +165,12 @@ public class PlayerView implements PropertyChangeListener {
 		}
 		if (evt.getPropertyName().equals("download")) {
 			updateCurrentlyPlaying();
+		}
+		if (evt.getPropertyName().equals("currentTime")) {
+			if (evt.getNewValue() instanceof Duration) {
+				Duration d = (Duration) evt.getNewValue();
+				updateTime(d);
+			}
 		}
 	}
 
