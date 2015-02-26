@@ -70,7 +70,6 @@ public class PlayerView implements PropertyChangeListener {
             @Override
             public void mouseDown(MouseEvent e) {
                 player.setSeek(e.x * 100 / currentProgressbar.getBounds().width);
-                System.out.println("whuat: " + e.x * 100 / currentProgressbar.getBounds().width);
             }
 
             @Override

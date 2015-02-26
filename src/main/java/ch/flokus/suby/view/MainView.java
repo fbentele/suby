@@ -6,6 +6,10 @@ import java.io.File;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -114,6 +118,26 @@ public class MainView implements PropertyChangeListener {
         albumCol2.setWidth(205);
         albumCol3.setWidth(40);
 
+        Menu albumMenu = new Menu(albumTable);
+        MenuItem ami1 = new MenuItem(albumMenu, SWT.NONE);
+        ami1.setText("Download Album");
+        albumTable.setMenu(albumMenu);
+        ami1.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (albumTable.getSelectionCount() == 1) {
+                    System.out.println("Download Album " + albumTable.getSelection()[0].getText(0));
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
         songTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         songTable.setBounds(690, 180, 300, 300);
         TableColumn col1 = new TableColumn(songTable, SWT.NONE);
@@ -132,9 +156,8 @@ public class MainView implements PropertyChangeListener {
 
         artistTable.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event e) {
-                int[] selection = artistTable.getSelectionIndices();
-                if (selection.length == 1) {
-                    String interpret = artistTable.getItem(selection[0]).getText(0);
+                if (artistTable.getSelectionCount() == 1) {
+                    String interpret = artistTable.getSelection()[0].getText(0);
                     Integer id = Integer.parseInt(interpret);
                     albumTable.removeAll();
                     songTable.removeAll();
@@ -153,8 +176,9 @@ public class MainView implements PropertyChangeListener {
             }
         });
 
-        albumTable.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
+        albumTable.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
                 String album = albumTable.getSelection()[0].getText(0);
                 Integer id = Integer.parseInt(album);
                 restService.getAlbumCover(albumService.getAlbum(album));
@@ -164,10 +188,23 @@ public class MainView implements PropertyChangeListener {
                     soitem.setText(new String[] { song.getId(), song.getTitle(), song.getNiceDuration() });
                 }
             }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
         });
 
-        albumTable.addListener(SWT.MouseDoubleClick, new Listener() {
-            public void handleEvent(Event event) {
+        albumTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseUp(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseDown(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseDoubleClick(MouseEvent e) {
                 String album = albumTable.getSelection()[0].getText(0);
                 Integer id = Integer.parseInt(album);
                 playerView.getPlayer().resetPlaylist();
