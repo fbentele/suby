@@ -90,6 +90,26 @@ public class PlayerView implements PropertyChangeListener {
         plTc1.setWidth(160);
         plTc2.setWidth(230);
         plTc3.setWidth(40);
+        playListTable.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseUp(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseDown(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseDoubleClick(MouseEvent e) {
+                player.play(playList.jumpTo(playListTable.getSelectionIndex()).getId());
+            }
+        });
+
         Button play = new Button(composite, SWT.PUSH);
         play.setImage(new Image(Display.getCurrent(), Thread.currentThread().getContextClassLoader().getResourceAsStream("img/play.png")));
         play.setBounds(30, 10, 50, 50);

@@ -16,22 +16,34 @@ public class Playlist {
         thePlaylist = new ArrayList<Song>();
     }
 
-    public Song getNext() {
+    public Song getNext(boolean update) {
         if (thePlaylist.size() > currentPosition) {
-            Song ret = thePlaylist.get(currentPosition++);
-            notifyListeners(this, "currentPosition", String.valueOf(currentPosition - 1), String.valueOf(currentPosition));
+            Song ret = thePlaylist.get(currentPosition);
+            if (update)
+                currentPosition++;
+            notifyListeners(this, "currentPosition", String.valueOf(currentPosition), String.valueOf(currentPosition));
             return ret;
         }
-        return null;
+        return thePlaylist.get(thePlaylist.size() - 1);
     }
 
-    public Song getPrevious() {
+    public Song getPrevious(boolean update) {
         if (thePlaylist.size() >= currentPosition && currentPosition > 1) {
-            currentPosition--;
+            if (update)
+                currentPosition--;
             notifyListeners(this, "currentPosition", String.valueOf(currentPosition + 1), String.valueOf(currentPosition));
             return thePlaylist.get(currentPosition - 1);
         }
         return thePlaylist.get(0);
+    }
+
+    public Song jumpTo(int index) {
+        if (index >= 0 && index < thePlaylist.size()) {
+            currentPosition = index;
+            notifyListeners(this, "currentPosition", String.valueOf(currentPosition), String.valueOf(currentPosition + 1));
+            return thePlaylist.get(currentPosition++);
+        }
+        return null;
     }
 
     public void append(Song songid) {
@@ -63,7 +75,7 @@ public class Playlist {
 
     public Song getCurrent() {
         if (thePlaylist.size() > currentPosition && currentPosition > 0) {
-            return thePlaylist.get(currentPosition - 1);
+            return thePlaylist.get(currentPosition);
         }
         return null;
     }

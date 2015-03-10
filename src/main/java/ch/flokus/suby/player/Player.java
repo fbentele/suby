@@ -38,7 +38,7 @@ public class Player {
     }
 
     public void play(String id) {
-        currentSong = rest.download(id, true);
+        currentSong = rest.download(id, false);
 
         notifyListeners(this, "download", "", currentSong.getCoverArt());
         if (mediaPlayer != null)
@@ -52,8 +52,7 @@ public class Player {
                 @Override
                 public void run() {
                     if (playList.hasNext()) {
-                        rest.download(playList.getNext().getId(), true);
-                        playList.getPrevious();
+                        rest.download(playList.getNext(false).getId(), true);
                     }
                 }
             });
@@ -85,7 +84,7 @@ public class Player {
     }
 
     public void playNext() {
-        Song next = playList.getNext();
+        Song next = playList.getNext(true);
         if (next != null && next.getId() != null) {
             play(next.getId());
         } else {
@@ -95,9 +94,9 @@ public class Player {
     }
 
     public void playPrevious() {
-        Song prev = playList.getPrevious();
-        if (prev != null && prev.getId() != null) {
-            play(prev.getId());
+        Song previousSong = playList.getPrevious(true);
+        if (previousSong != null && previousSong.getId() != null) {
+            play(previousSong.getId());
         } else {
             mediaPlayer.stop();
         }
@@ -126,7 +125,7 @@ public class Player {
 
     public void startPlaylist() {
         if (playList.getAll().size() > 0) {
-            this.play(playList.getNext().getId());
+            this.play(playList.getNext(true).getId());
         }
     }
 
