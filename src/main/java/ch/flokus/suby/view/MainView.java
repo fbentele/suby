@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import ch.flokus.suby.model.Album;
 import ch.flokus.suby.model.Artist;
-import ch.flokus.suby.model.Song;
+import ch.flokus.suby.model.SongModel;
 import ch.flokus.suby.rest.RestAlbums;
 import ch.flokus.suby.rest.RestArtists;
 import ch.flokus.suby.rest.RestBase;
@@ -126,7 +126,7 @@ public class MainView implements PropertyChangeListener {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (albumTable.getSelectionCount() == 1) {
-                    for (Song s : songService.getSongsForAlbum(Integer.parseInt(albumTable.getSelection()[0].getText(0)))) {
+                    for (SongModel s : songService.getSongsForAlbum(Integer.parseInt(albumTable.getSelection()[0].getText(0)))) {
                         restService.download(s.getId(), true);
                     }
                 }
@@ -182,7 +182,7 @@ public class MainView implements PropertyChangeListener {
                 Integer id = Integer.parseInt(album);
                 restService.getAlbumCover(albumService.getAlbum(album));
                 songTable.removeAll();
-                for (Song song : songService.getSongsForAlbum(id)) {
+                for (SongModel song : songService.getSongsForAlbum(id)) {
                     TableItem soitem = new TableItem(songTable, SWT.NONE);
                     soitem.setText(new String[] { song.getId(), song.getTitle(), song.getNiceDuration() });
                 }

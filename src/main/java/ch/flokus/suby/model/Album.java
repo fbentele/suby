@@ -3,13 +3,24 @@ package ch.flokus.suby.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "album")
 public class Album {
+    @DatabaseField(id = true)
     private String id;
+    @DatabaseField
     private String name;
+    @DatabaseField
     private String coverArt;
+    @DatabaseField
     private String songCount;
+    @DatabaseField
     private String artistId;
+    @DatabaseField
     private String artist;
+    @DatabaseField
     private String year;
 
     public Album() {

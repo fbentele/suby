@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import ch.flokus.suby.model.Song;
+import ch.flokus.suby.model.SongModel;
 import ch.flokus.suby.player.Player;
 import ch.flokus.suby.player.Playlist;
 import ch.flokus.suby.service.AppUtils;
@@ -155,7 +155,7 @@ public class PlayerView implements PropertyChangeListener {
     }
 
     private void updateCurrentlyPlaying() {
-        Song cur = player.getCurrentlyPlaying();
+        SongModel cur = player.getCurrentlyPlaying();
         if (cur != null) {
             currentAlbum.setText(cur.getAlbum());
             currentArtist.setText(cur.getArtist());
@@ -174,7 +174,7 @@ public class PlayerView implements PropertyChangeListener {
     }
 
     private void updateTime(Duration newValue) {
-        Song cur = player.getCurrentlyPlaying();
+        SongModel cur = player.getCurrentlyPlaying();
         currentTime.setText(AppUtils.getNiceTime(newValue.toSeconds()));
         currentProgressbar.setSelection(AppUtils.getPercentage(cur.getDuration(), newValue.toSeconds()));
     }
@@ -183,7 +183,7 @@ public class PlayerView implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("currentPosition")) {
             playListTable.removeAll();
-            for (Song song : playList.getAll()) {
+            for (SongModel song : playList.getAll()) {
                 TableItem plTi1 = new TableItem(playListTable, SWT.NONE);
                 plTi1.setText(0, song.getArtist());
                 plTi1.setText(1, song.getTitle());

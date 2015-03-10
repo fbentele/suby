@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import ch.flokus.suby.App;
 import ch.flokus.suby.enums.ServerStatus;
 import ch.flokus.suby.model.Album;
-import ch.flokus.suby.model.Song;
+import ch.flokus.suby.model.SongModel;
 import ch.flokus.suby.service.AppUtils;
 import ch.flokus.suby.service.SettingsService;
 import ch.flokus.suby.settings.SettingsConstants;
@@ -60,11 +60,11 @@ public class RestBase {
 		return request(restbase);
 	}
 
-	public Song download(String songId, boolean async) {
+	public SongModel download(String songId, boolean async) {
 		// get song meta information
 		JSONObject songmeta = getJson("getSong.view", "id", songId);
 		songmeta = songmeta.getJSONObject("song");
-		Song song = new Song(songmeta);
+		SongModel song = new SongModel(songmeta);
 		// url for song download
 		String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass
 				+ "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;

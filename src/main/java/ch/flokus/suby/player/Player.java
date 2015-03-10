@@ -13,13 +13,13 @@ import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
-import ch.flokus.suby.model.Song;
+import ch.flokus.suby.model.SongModel;
 import ch.flokus.suby.rest.RestBase;
 import ch.flokus.suby.service.AppUtils;
 
 public class Player {
     private Media current = null;
-    private Song currentSong = null;
+    private SongModel currentSong = null;
     private MediaPlayer mediaPlayer = null;
     private Playlist playList = null;
     private RestBase rest = null;
@@ -84,7 +84,7 @@ public class Player {
     }
 
     public void playNext() {
-        Song next = playList.getNext(true);
+        SongModel next = playList.getNext(true);
         if (next != null && next.getId() != null) {
             play(next.getId());
         } else {
@@ -94,7 +94,7 @@ public class Player {
     }
 
     public void playPrevious() {
-        Song previousSong = playList.getPrevious(true);
+        SongModel previousSong = playList.getPrevious(true);
         if (previousSong != null && previousSong.getId() != null) {
             play(previousSong.getId());
         } else {
@@ -119,7 +119,7 @@ public class Player {
         mediaPlayer.seek(new Duration(i));
     }
 
-    public void addToPlaylist(List<Song> list) {
+    public void addToPlaylist(List<SongModel> list) {
         playList.appendAll(list);
     }
 
@@ -143,7 +143,7 @@ public class Player {
         listener.add(newListener);
     }
 
-    public Song getCurrentlyPlaying() {
+    public SongModel getCurrentlyPlaying() {
         return currentSong;
     }
 

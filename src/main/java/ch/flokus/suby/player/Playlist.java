@@ -5,20 +5,20 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.flokus.suby.model.Song;
+import ch.flokus.suby.model.SongModel;
 
 public class Playlist {
-    private List<Song> thePlaylist = null;
+    private List<SongModel> thePlaylist = null;
     private Integer currentPosition = 0;
     private List<PropertyChangeListener> listener = new ArrayList<PropertyChangeListener>();
 
     public Playlist() {
-        thePlaylist = new ArrayList<Song>();
+        thePlaylist = new ArrayList<SongModel>();
     }
 
-    public Song getNext(boolean update) {
+    public SongModel getNext(boolean update) {
         if (thePlaylist.size() > currentPosition) {
-            Song ret = thePlaylist.get(currentPosition);
+            SongModel ret = thePlaylist.get(currentPosition);
             if (update)
                 currentPosition++;
             notifyListeners(this, "currentPosition", String.valueOf(currentPosition), String.valueOf(currentPosition));
@@ -27,7 +27,7 @@ public class Playlist {
         return thePlaylist.get(thePlaylist.size() - 1);
     }
 
-    public Song getPrevious(boolean update) {
+    public SongModel getPrevious(boolean update) {
         if (thePlaylist.size() >= currentPosition && currentPosition > 1) {
             if (update)
                 currentPosition--;
@@ -37,7 +37,7 @@ public class Playlist {
         return thePlaylist.get(0);
     }
 
-    public Song jumpTo(int index) {
+    public SongModel jumpTo(int index) {
         if (index >= 0 && index < thePlaylist.size()) {
             currentPosition = index;
             notifyListeners(this, "currentPosition", String.valueOf(currentPosition), String.valueOf(currentPosition + 1));
@@ -46,20 +46,20 @@ public class Playlist {
         return null;
     }
 
-    public void append(Song songid) {
+    public void append(SongModel songid) {
         thePlaylist.add(songid);
     }
 
-    public void appendAll(List<Song> list) {
+    public void appendAll(List<SongModel> list) {
         thePlaylist.addAll(list);
     }
 
-    public List<Song> getAll() {
+    public List<SongModel> getAll() {
         return thePlaylist;
     }
 
     public void reset() {
-        thePlaylist = new ArrayList<Song>();
+        thePlaylist = new ArrayList<SongModel>();
         currentPosition = 0;
     }
 
@@ -73,7 +73,7 @@ public class Playlist {
         listener.add(newListener);
     }
 
-    public Song getCurrent() {
+    public SongModel getCurrent() {
         if (thePlaylist.size() > currentPosition && currentPosition > 0) {
             return thePlaylist.get(currentPosition);
         }
