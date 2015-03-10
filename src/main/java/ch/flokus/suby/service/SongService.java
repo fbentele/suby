@@ -11,15 +11,23 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.table.TableUtils;
 
 public class SongService {
+    private static SongService instance;
     Dao<SongModel, String> songDao = null;
 
-    public SongService() {
+    private SongService() {
         try {
             songDao = DaoManager.createDao(DBSource.getConnection(), SongModel.class);
             TableUtils.createTableIfNotExists(DBSource.getConnection(), SongModel.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static SongService getInstance() {
+        if (instance == null) {
+            instance = new SongService();
+        }
+        return instance;
     }
 
     public SongModel getSong(String id) {
@@ -40,7 +48,7 @@ public class SongService {
         }
     }
 
-    public void isertOrUpdateSong(SongModel song) {
+    public void insertOrUpdateSong(SongModel song) {
         try {
             SongModel s = songDao.queryForId(song.getId());
             if (s == null) {

@@ -56,9 +56,9 @@ public class MainView implements PropertyChangeListener {
 
     public MainView() {
         restService = RestBase.getInstance();
-        songService = new RestSongs();
-        albumService = new RestAlbums();
-        artistService = new RestArtists();
+        songService = RestSongs.getInstance();
+        albumService = RestAlbums.getInstance();
+        artistService = RestArtists.getInstance();
         Status.getInstance().addChangeListener(this);
     }
 

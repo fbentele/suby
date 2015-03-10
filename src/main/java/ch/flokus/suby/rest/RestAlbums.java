@@ -11,10 +11,18 @@ import org.json.JSONObject;
 import ch.flokus.suby.model.Album;
 
 public class RestAlbums {
-    private RestBase rest = null;
+    private RestBase rest;
+    private static RestAlbums instance;
 
-    public RestAlbums() {
+    private RestAlbums() {
         rest = RestBase.getInstance();
+    }
+
+    public static RestAlbums getInstance() {
+        if (instance == null) {
+            instance = new RestAlbums();
+        }
+        return instance;
     }
 
     public List<Album> getAllForArtist(Integer id) {

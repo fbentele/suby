@@ -10,10 +10,18 @@ import org.json.JSONObject;
 import ch.flokus.suby.model.SongModel;
 
 public class RestSongs {
-    private RestBase rest = null;
+    private RestBase rest;
+    private static RestSongs instance;
 
-    public RestSongs() {
+    private RestSongs() {
         rest = RestBase.getInstance();
+    }
+
+    public static RestSongs getInstance() {
+        if (instance == null) {
+            instance = new RestSongs();
+        }
+        return instance;
     }
 
     public List<SongModel> getSongsForAlbum(Integer id) {

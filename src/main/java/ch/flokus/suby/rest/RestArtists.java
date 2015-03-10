@@ -11,9 +11,17 @@ import ch.flokus.suby.model.Artist;
 
 public class RestArtists {
     private RestBase rest = null;
+    private static RestArtists instance;
 
-    public RestArtists() {
+    private RestArtists() {
         rest = RestBase.getInstance();
+    }
+
+    public static RestArtists getInstance() {
+        if (instance == null) {
+            instance = new RestArtists();
+        }
+        return instance;
     }
 
     // TODO refactoring needed
