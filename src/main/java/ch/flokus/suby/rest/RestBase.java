@@ -62,8 +62,7 @@ public class RestBase {
 
 	public SongModel download(String songId, boolean async) {
 		// get song meta information
-		JSONObject songmeta = getJson("getSong.view", "id", songId);
-		songmeta = songmeta.getJSONObject("song");
+		JSONObject songmeta = getJson("getSong.view", "id", songId).getJSONObject("song");
 		SongModel song = new SongModel(songmeta);
 		// url for song download
 		String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass
@@ -76,15 +75,15 @@ public class RestBase {
 			absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().\\-/\\ ]", "_");
 			System.out.println("---- after -----");
 			System.out.println(absolute);
-			File mp = new File(absolute);
-			if (mp.exists()) {
-				System.out.println(songId + ": already downloaded");
+			File songFile = new File(absolute);
+			if (songFile.exists()) {
+				System.out.println("Song with ID: " + songId + " already downloaded");
 			} else {
-				System.out.println("downloading id:" + songId);
+				System.out.println("Start downloading song with ID: " + songId);
 				if (async) {
-					new AsyncDownloader(server, mp, App.mainView);
+					new AsyncDownloader(server, songFile, App.mainView);
 				} else {
-					FileUtils.copyURLToFile(server, mp);
+					FileUtils.copyURLToFile(server, songFile);
 				}
 			}
 			absolute = "file://" + absolute.replaceAll(" ", "%20");
@@ -93,7 +92,8 @@ public class RestBase {
 		} catch (MalformedURLException e) {
 			System.out.println("URL is malformed: " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("io exception" + e.getMessage());
+			System.out.println("IO exception, server responded not with a file, original message: "
+					+ e.getMessage());
 		}
 		return null;
 	}
