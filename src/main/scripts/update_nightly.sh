@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# place this file in the ~/.suby/ folder
+
 echo "Start downloading nightly.zip"
 wget http://suby.flokus.ch/nightly.zip
 echo "Finished downloading nightly.zip"
