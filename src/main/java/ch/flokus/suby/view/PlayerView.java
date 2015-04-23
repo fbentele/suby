@@ -202,6 +202,19 @@ public class PlayerView implements PropertyChangeListener {
                 updateTime(d);
             }
         }
+        if (evt.getPropertyName().equals("updatePlaylist")) {
+            Integer currently = playListTable.getSelectionIndex();
+            playListTable.removeAll();
+            for (SongModel song : playList.getAll()) {
+                TableItem plTi1 = new TableItem(playListTable, SWT.NONE);
+                plTi1.setText(0, song.getArtist());
+                plTi1.setText(1, song.getTitle());
+                plTi1.setText(2, song.getNiceDuration());
+            }
+            if (currently <= playListTable.getItemCount()) {
+                playListTable.setSelection(currently);
+            }
+        }
     }
 
     public Player getPlayer() {

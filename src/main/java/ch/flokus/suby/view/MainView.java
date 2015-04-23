@@ -120,7 +120,9 @@ public class MainView implements PropertyChangeListener {
 
         Menu albumMenu = new Menu(albumTable);
         MenuItem ami1 = new MenuItem(albumMenu, SWT.NONE);
+        MenuItem ami2 = new MenuItem(albumMenu, SWT.NONE);
         ami1.setText("Download Album");
+        ami2.setText("Add to Playlist");
         albumTable.setMenu(albumMenu);
         ami1.addSelectionListener(new SelectionListener() {
             @Override
@@ -130,6 +132,18 @@ public class MainView implements PropertyChangeListener {
                         restService.download(s.getId(), true);
                     }
                 }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+        ami2.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                playerView.getPlayer().addToPlaylist(songService.getSongsForAlbum(Integer.parseInt(albumTable.getSelection()[0].getText(0))));
+                playerView.propertyChange(new PropertyChangeEvent(this, "updatePlaylist", null, null));
             }
 
             @Override
