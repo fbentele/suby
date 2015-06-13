@@ -118,6 +118,7 @@ public class MainView implements PropertyChangeListener {
 		albumCol2.setWidth(205);
 		albumCol3.setWidth(40);
 
+<<<<<<< HEAD
 		Menu albumMenu = new Menu(albumTable);
 		MenuItem ami1 = new MenuItem(albumMenu, SWT.NONE);
 		ami1.setText("Download Album");
@@ -137,6 +138,40 @@ public class MainView implements PropertyChangeListener {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
+=======
+        Menu albumMenu = new Menu(albumTable);
+        MenuItem ami1 = new MenuItem(albumMenu, SWT.NONE);
+        MenuItem ami2 = new MenuItem(albumMenu, SWT.NONE);
+        ami1.setText("Download Album");
+        ami2.setText("Add to Playlist");
+        albumTable.setMenu(albumMenu);
+        ami1.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (albumTable.getSelectionCount() == 1) {
+                    for (SongModel s : songService.getSongsForAlbum(Integer.parseInt(albumTable.getSelection()[0].getText(0)))) {
+                        restService.download(s.getId(), true);
+                    }
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+        ami2.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                playerView.getPlayer().addToPlaylist(songService.getSongsForAlbum(Integer.parseInt(albumTable.getSelection()[0].getText(0))));
+                playerView.propertyChange(new PropertyChangeEvent(this, "updatePlaylist", null, null));
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+>>>>>>> 27bac4f1f2e94020fae98fd4739aa4cb7e03501f
 
 		songTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
 		songTable.setBounds(690, 180, 300, 300);
