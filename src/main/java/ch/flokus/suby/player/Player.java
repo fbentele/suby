@@ -39,8 +39,10 @@ public class Player {
 
     public void play(String id) {
         currentSong = rest.download(id, false);
+        if (currentSong != null && currentSong.getCoverArt() != null) {
+            notifyListeners(this, "download", "", currentSong.getCoverArt());
+        }
 
-        notifyListeners(this, "download", "", currentSong.getCoverArt());
         if (mediaPlayer != null)
             mediaPlayer.stop();
         try {
