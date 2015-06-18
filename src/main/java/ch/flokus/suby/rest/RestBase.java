@@ -58,18 +58,7 @@ public class RestBase {
         return request(restbase);
     }
 
-<<<<<<< HEAD
-    public SongModel download(String songId, boolean async) {
-        // get song meta information
-        JSONObject songmeta = getJson("getSong.view", "id", songId);
-        try {
-            songmeta = songmeta.getJSONObject("song");
-        } catch (JSONException e) {
-            System.out.println("Problem getting song json: " + e.getMessage());
-            return null;
-        }
-        SongModel song = new SongModel(songmeta);
-=======
+
 	public SongModel download(String songId, boolean async) {
 		// get song meta information
 		JSONObject songmeta = getJson("getSong.view", "id", songId).getJSONObject("song");
@@ -107,7 +96,6 @@ public class RestBase {
 		}
 		return null;
 	}
->>>>>>> 643040bcb219d8c5ac08af1001e826cb8ff08bc7
 
         // url for song download
         String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;
