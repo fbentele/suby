@@ -58,6 +58,7 @@ public class RestBase {
         return request(restbase);
     }
 
+<<<<<<< HEAD
     public SongModel download(String songId, boolean async) {
         // get song meta information
         JSONObject songmeta = getJson("getSong.view", "id", songId);
@@ -68,6 +69,45 @@ public class RestBase {
             return null;
         }
         SongModel song = new SongModel(songmeta);
+=======
+	public SongModel download(String songId, boolean async) {
+		// get song meta information
+		JSONObject songmeta = getJson("getSong.view", "id", songId).getJSONObject("song");
+		SongModel song = new SongModel(songmeta);
+		// url for song download
+		String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass
+				+ "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;
+		try {
+			URL server = new URL(restbase);
+			String absolute = System.getProperty("user.home") + "/Music/Suby/" + song.getPath();
+			System.out.println("---- before -----");
+			System.out.println(absolute);
+			absolute = absolute.replaceAll("[^a-zA-ZÄäÖöÜüéèà0-9!().\\-/\\ ]", "_");
+			System.out.println("---- after -----");
+			System.out.println(absolute);
+			File songFile = new File(absolute);
+			if (songFile.exists()) {
+				System.out.println("Song with ID: " + songId + " already downloaded");
+			} else {
+				System.out.println("Start downloading song with ID: " + songId);
+				if (async) {
+					new AsyncDownloader(server, songFile, App.mainView);
+				} else {
+					FileUtils.copyURLToFile(server, songFile);
+				}
+			}
+			absolute = "file://" + absolute.replaceAll(" ", "%20");
+			song.setPath(absolute);
+			return song;
+		} catch (MalformedURLException e) {
+			System.out.println("URL is malformed: " + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("IO exception, server responded not with a file, original message: "
+					+ e.getMessage());
+		}
+		return null;
+	}
+>>>>>>> 643040bcb219d8c5ac08af1001e826cb8ff08bc7
 
         // url for song download
         String restbase = server + "/rest/download.view?u=" + user + "&p=enc:" + pass + "&v=1.10.0&c=" + appname + "&f=json&id=" + songId;
